@@ -831,16 +831,3 @@ ifneq ($(filter OP02%, $(OPTR_SPEC_SEG_DEF)),)
     $(call dep-err-common, Please do not set OPTR_SPEC_SEG_DEF as OP02* or set MTK_SIP_SUPPORT as no)
   endif
 endif
-#############################################################
-ifeq ($(filter NONE,$(OPTR_SPEC_SEG_DEF)),)
-  ifeq ($(strip $(MTK_TENCENT_MOBILE_MANAGER_NORMAL_SUPPORT)), yes)
-    $(call dep-err-common,Please do not set MTK_TENCENT_MOBILE_MANAGER_NORMAL_SUPPORT as yes or set OPTR_SPEC_SEG_DEF as NONE)
-  endif
-endif
-
-ifeq ($(strip $(MTK_BSP_PACKAGE)),yes)
-  ifeq ($(strip $(MTK_TENCENT_MOBILE_MANAGER_NORMAL_SUPPORT)), yes)
-    $(call dep-err-common,Please do not set MTK_TENCENT_MOBILE_MANAGER_NORMAL_SUPPORT as yes or set MTK_BSP_PACKAGE as no)
-  endif
-endif
-####################################################################

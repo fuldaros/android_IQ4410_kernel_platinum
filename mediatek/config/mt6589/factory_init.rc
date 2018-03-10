@@ -119,10 +119,6 @@ on post-fs
     chown system system /system/data
     chmod 0777 /system/data
 
-    # We chown/chmod /data again so because mount is run as root + defaults
-    chown system system /data
-    chmod 0771 /data
-
     # Same reason as /data above
     chown system cache /cache
     chmod 0770 /cache
