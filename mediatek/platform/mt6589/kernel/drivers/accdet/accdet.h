@@ -35,7 +35,7 @@
 #include <mach/mt_typedefs.h>
 #include <mach/mt_reg_base.h>
 #include <mach/irqs.h>
-#include <accdet_custom.h>
+#include <mach/accdet_custom.h>
 #include <mach/reg_accdet.h>
 //#include <mach/mt6577_pll.h>
 //#include <mach/mt_pmic_feature_api.h>
