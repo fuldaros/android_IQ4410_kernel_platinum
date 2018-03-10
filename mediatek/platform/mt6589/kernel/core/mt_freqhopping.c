@@ -26,7 +26,7 @@
 #include <asm/sched_clock.h>
 #include <linux/vmalloc.h>
 #include <linux/dma-mapping.h>
-#include <board-custom.h>
+#include "mach/board-custom.h"
 
 
 #include "mach/mt_freqhopping.h"
@@ -796,8 +796,8 @@ static int mt_h2oc_mempll(void)
 
 	FH_MSG("EN: %s:%d",__func__,g_curr_dramc);
 
-	/*Please note that the DFS can・t be applied in systems with DDR3 DRAM!
-	  It・s only for the mobile DRAM (LPDDR*)! */
+	/*Please note that the DFS can\A1\A6t be applied in systems with DDR3 DRAM!
+	  It\A1\A6s only for the mobile DRAM (LPDDR*)! */
 
 	if( (get_ddr_type() != LPDDR2) && (get_ddr_type() != LPDDR3) ) {
 		FH_MSG("Not LPDDR*");
@@ -872,7 +872,7 @@ static int mt_h2oc_mempll(void)
 	fh_write32(REG_FHCTL_CFG, (1 << 8));
 
 	//Use 2G1 hopping table to DFS
-	//SW need fill 64・b1 in 2G1 DRAM address (channel number = 0)
+	//SW need fill 64\A1\A6b1 in 2G1 DRAM address (channel number = 0)
 	fh_write32(REG_FHDMA_2G1BASE,  __pa(g_mempll_fh_table));
 
 	//sync NCPO value
@@ -883,8 +883,8 @@ static int mt_h2oc_mempll(void)
        	mb();
 
 	//Configure hopping slope
-	//sfstr_dts[3:0] = 4・d0(0.27us)
-	//sfstr_dys[3:0] = 4・d9(0.023437500)
+	//sfstr_dts[3:0] = 4\A1\A6d0(0.27us)
+	//sfstr_dys[3:0] = 4\A1\A6d9(0.023437500)
 	//slope = 26MHz * 0.007812500 / 0.27us = 0.75MHz/us < 2.5MHz/us
 	fh_write32(REG_FHCTL2_CFG, ( (0 << 24) | (7 << 28) | 5));
 	
@@ -948,8 +948,8 @@ static int mt_oc2h_mempll(void)
 	
 	FH_MSG("EN: %s:%d",__func__,g_curr_dramc);
 	
-	/*Please note that the DFS can・t be applied in systems with DDR3 DRAM!
-	  It・s only for the mobile DRAM (LPDDR*)! */
+	/*Please note that the DFS can\A1\A6t be applied in systems with DDR3 DRAM!
+	  It\A1\A6s only for the mobile DRAM (LPDDR*)! */
 
 	if( (get_ddr_type() != LPDDR2) && (get_ddr_type() != LPDDR3) ) {
 		FH_MSG("Not LPDDR*");
@@ -1023,7 +1023,7 @@ static int mt_oc2h_mempll(void)
 	fh_write32(REG_FHCTL_CFG, (1 << 8));
 
 	//Use 2G1 hopping table to DFS
-	//SW need fill 64・b1 in 2G1 DRAM address (channel number = 0)
+	//SW need fill 64\A1\A6b1 in 2G1 DRAM address (channel number = 0)
 	fh_write32(REG_FHDMA_2G1BASE,  __pa(g_mempll_fh_table));
 
 	//sync NCPO value
@@ -1034,8 +1034,8 @@ static int mt_oc2h_mempll(void)
 	mb();
 
 	//Configure hopping slope
-	//sfstr_dts[3:0] = 4・d0(0.27us)
-	//sfstr_dys[3:0] = 4・d9(0.023437500)
+	//sfstr_dts[3:0] = 4\A1\A6d0(0.27us)
+	//sfstr_dys[3:0] = 4\A1\A6d9(0.023437500)
 	//slope = 26MHz * 0.007812500 / 0.27us = 0.75MHz/us < 2.5MHz/us
 	fh_write32(REG_FHCTL2_CFG, ( (0 << 24) | (7 << 28) | 5));
 	
@@ -1095,8 +1095,8 @@ int mt_l2h_mempll(void)  //mempll low to high (200->266MHz)
 	
 	FH_MSG("EN: %s:%d",__func__,g_curr_dramc);
 	
-	/*Please note that the DFS can・t be applied in systems with DDR3 DRAM!
-	  It・s only for the mobile DRAM (LPDDR*)! */
+	/*Please note that the DFS can\A1\A6t be applied in systems with DDR3 DRAM!
+	  It\A1\A6s only for the mobile DRAM (LPDDR*)! */
 
 	if( (get_ddr_type() != LPDDR2) && (get_ddr_type() != LPDDR3) ) {
 		FH_MSG("Not LPDDR*");
@@ -1170,7 +1170,7 @@ int mt_l2h_mempll(void)  //mempll low to high (200->266MHz)
 	fh_write32(REG_FHCTL_CFG, (1 << 8));
 
 	//Use 2G1 hopping table to DFS
-	//SW need fill 64・b1 in 2G1 DRAM address (channel number = 0)
+	//SW need fill 64\A1\A6b1 in 2G1 DRAM address (channel number = 0)
 	fh_write32(REG_FHDMA_2G1BASE,  __pa(g_mempll_fh_table));
 
 	//sync NCPO value
@@ -1181,8 +1181,8 @@ int mt_l2h_mempll(void)  //mempll low to high (200->266MHz)
 	mb();
 
 	//Configure hopping slope
-	//sfstr_dts[3:0] = 4・d0(0.27us)
-	//sfstr_dys[3:0] = 4・d9(0.023437500)
+	//sfstr_dts[3:0] = 4\A1\A6d0(0.27us)
+	//sfstr_dys[3:0] = 4\A1\A6d9(0.023437500)
 	//slope = 26MHz * 0.007812500 / 0.27us = 0.75MHz/us < 2.5MHz/us
 	fh_write32(REG_FHCTL2_CFG, ( (0 << 24) | (7 << 28) | 5));
 	
@@ -1243,8 +1243,8 @@ int mt_h2l_mempll(void)  //mempll low to high (200->266MHz)
 	
 	FH_MSG("EN: %s:%d",__func__,g_curr_dramc);
 	
-	/*Please note that the DFS can・t be applied in systems with DDR3 DRAM!
-	  It・s only for the mobile DRAM (LPDDR*)! */
+	/*Please note that the DFS can\A1\A6t be applied in systems with DDR3 DRAM!
+	  It\A1\A6s only for the mobile DRAM (LPDDR*)! */
 
 	if( (get_ddr_type() != LPDDR2) && (get_ddr_type() != LPDDR3) ) {
 		FH_MSG("Not LPDDR*");
@@ -1318,7 +1318,7 @@ int mt_h2l_mempll(void)  //mempll low to high (200->266MHz)
 	fh_write32(REG_FHCTL_CFG, (1 << 8));
 
 	//Use 2G1 hopping table to DFS
-	//SW need fill 64・b1 in 2G1 DRAM address (channel number = 0)
+	//SW need fill 64\A1\A6b1 in 2G1 DRAM address (channel number = 0)
 	fh_write32(REG_FHDMA_2G1BASE,  __pa(g_mempll_fh_table));
 
 	//sync NCPO value
@@ -1329,8 +1329,8 @@ int mt_h2l_mempll(void)  //mempll low to high (200->266MHz)
        	mb();
 
 	//Configure hopping slope
-	//sfstr_dts[3:0] = 4・d0(0.27us)
-	//sfstr_dys[3:0] = 4・d9(0.023437500)
+	//sfstr_dts[3:0] = 4\A1\A6d0(0.27us)
+	//sfstr_dys[3:0] = 4\A1\A6d9(0.023437500)
 	//slope = 26MHz * 0.007812500 / 0.27us = 0.75MHz/us < 2.5MHz/us
 	fh_write32(REG_FHCTL2_CFG, ( (0 << 24) | (7 << 28) | 5));
 	

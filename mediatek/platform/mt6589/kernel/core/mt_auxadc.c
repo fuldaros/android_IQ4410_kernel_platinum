@@ -48,7 +48,7 @@
 #include <mach/mt_gpt.h>
 #include <mach/mt_clkmgr.h>
 #include <mach/sync_write.h>
-#include <cust_adc.h> // generate by DCT Tool
+#include <mach/cust_adc.h> // generate by DCT Tool
 
 //#define AUXADC_BATTERY_VOLTAGE_CHANNEL     0
 //#define AUXADC_REF_CURRENT_CHANNEL     1

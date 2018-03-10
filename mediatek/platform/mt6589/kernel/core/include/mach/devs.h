@@ -1,7 +1,7 @@
 #ifndef __DEVS_H__
 #define __DEVS_H__
 
-#include <board-custom.h>
+#include "board-custom.h"
 #include <mach/board.h>
 
 #define CFG_DEV_UART1

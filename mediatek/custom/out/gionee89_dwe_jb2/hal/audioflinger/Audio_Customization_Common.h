@@ -84,6 +84,12 @@
 *****************************************************/
 //#define AUDIO_HQA_SUPPORT
 
+/****************************************************
+* Define this  , Audio Policy will apply ro.camera.sound.forced setting in mediatek/config/project_name/system.prop 
+* (Add this optionn because JB2 load is invalid
+*****************************************************/
+//#define ENABLE_CAMERA_SOUND_FORCED_SET
+
 #define AUDIO_DROP_FRAME_COUNT_NORMAL 5
 #define AUDIO_DROP_FRAME_COUNT_RECORD 5
 #define AUDIO_DROP_FRAME_COUNT_CTS 5

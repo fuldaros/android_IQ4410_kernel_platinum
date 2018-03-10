@@ -50,9 +50,9 @@
 #include <mach/mt_pmic_wrap.h>
 
 #ifdef MD_EINT
-#include <cust_eint.h>
-#include <cust_eint_md1.h>
-#include <cust_eint_md2.h>
+#include "include/mach/cust_eint.h"
+#include "include/mach/cust_eint_md1.h"
+#include "include/mach/cust_eint_md2.h"
 #endif
 #include "mach/mt_reg_base.h"
 #include "mach/eint.h"
@@ -64,7 +64,7 @@
 #include "common.h"
 #include "reg_base.H"
 #include "intrCtrl.h"
-#include "eint.h"
+#include "include/mach/eint.h"
 #endif
 
 #define EINT_DEBUG   0

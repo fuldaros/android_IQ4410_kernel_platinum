@@ -61,7 +61,10 @@ int cust_isNeedAFLamp(int flashMode, int afLampMode, int isBvHigherTriger)
     // AF_LAMP_AUTO,
     // AF_LAMP_FLASH,
 }
-
+int cust_isNeedDoPrecapAF(int isFocused, int flashMode, int afLampMode, int isBvLowerTriger)
+{	
+	return 0;
+}
 
 void copyTuningPara(FLASH_TUNING_PARA* p, NVRAM_FLASH_TUNING_PARA* nv_p)
 {

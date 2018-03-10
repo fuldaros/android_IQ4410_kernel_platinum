@@ -12,6 +12,7 @@ void get_fd_CustomizeData(FD_Customize_PARA  *FDDataOut)
     FDDataOut->FDRefresh = 60;
     FDDataOut->SDThreshold = 69;
     FDDataOut->SDMainFaceMust = 1;
+    FDDataOut->SDMaxSmileNum = 3;
     FDDataOut->GSensor = 1;
 }
 

@@ -1,7 +1,7 @@
 #include <linux/fs.h>
 #include <linux/ioctl.h>
 // FIX-ME: marked for early porting
-#include <cust_gpio_usage.h>
+#include "cust_gpio_usage.h"
 /*----------------------------------------------------------------------------*/
 //  Error Code No.
 #define RSUCCESS        0

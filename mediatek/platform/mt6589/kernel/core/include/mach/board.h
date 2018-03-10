@@ -4,7 +4,7 @@
 #include <generated/autoconf.h>
 #include <linux/pm.h>
 //#include <mach/mt6575.h>
-#include <board-custom.h>
+#include "board-custom.h"
 
 typedef void (*sdio_irq_handler_t)(void*);  /* external irq handler */
 typedef void (*pm_callback_t)(pm_message_t state, void *data);
