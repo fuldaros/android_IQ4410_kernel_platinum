@@ -19,7 +19,7 @@
  */
 #include "tpd.h"
 #include <linux/interrupt.h>
-#include <cust_eint.h>
+#include <mach/cust_eint.h>
 #include <linux/i2c.h>
 #include <linux/sched.h>
 #include <linux/kthread.h>
@@ -29,11 +29,11 @@
 #include <linux/delay.h>
 #include <linux/namei.h>
 #include <linux/mount.h>
-#include "cust_gpio_usage.h"
+#include <mach/cust_gpio_usage.h>
 #include <asm/uaccess.h>
 
 #define GUP_FW_INFO
-#include "tpd_custom_gt9xx.h"
+#include <mach/tpd_custom_gt9xx.h>
 
 #define GUP_REG_HW_INFO             0x4220
 #define GUP_REG_FW_MSG              0x41E4

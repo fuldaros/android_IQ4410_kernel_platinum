@@ -21,7 +21,7 @@
 
 #include "tpd.h"
 #include <linux/interrupt.h>
-#include <cust_eint.h>
+#include <mach/cust_eint.h>
 #include <linux/i2c.h>
 #include <linux/sched.h>
 #include <linux/kthread.h>
@@ -29,10 +29,10 @@
 #include <linux/wait.h>
 #include <linux/time.h>
 #include <linux/delay.h>
-#include "cust_gpio_usage.h"
+#include <mach/cust_gpio_usage.h>
 #include <asm/uaccess.h>
 
-#include "tpd_custom_gt9xx.h"
+#include <mach/tpd_custom_gt9xx.h>
 
 
 #pragma pack(1)

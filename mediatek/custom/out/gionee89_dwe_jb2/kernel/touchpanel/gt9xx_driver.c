@@ -1,7 +1,7 @@
 #include "tpd.h"
-#include "tpd_custom_gt9xx.h"
+#include <mach/tpd_custom_gt9xx.h>
 
-#include "cust_gpio_usage.h"
+#include <mach/cust_gpio_usage.h>
 
 #ifdef TPD_PROXIMITY
 #include <linux/hwmsensor.h>
