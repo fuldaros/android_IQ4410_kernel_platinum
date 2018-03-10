@@ -2,7 +2,7 @@
 #define KPD_IO_H
 		  
 #include <linux/ioctl.h>
-#include <mtk_kpd.h>
+#include <mach/mtk_kpd.h>
 
 #define KPD_AUTOTEST	KPD_YES
 #define KPD_DEBUG	KPD_YES

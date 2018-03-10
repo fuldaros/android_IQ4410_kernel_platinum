@@ -57,7 +57,7 @@
 
 #include "mt6320_battery.h"
 
-#include <mtk_kpd.h>
+#include <mach/mtk_kpd.h>
 
 #if defined (MTK_KERNEL_POWER_OFF_CHARGING)
 #include <mach/mt_boot.h>
@@ -86,8 +86,8 @@ static void disable_pll(int id, char *mod_name)
 //----------------------------------------------------------------------
 #endif
 
-#include <cust_gpio_usage.h>
-#include <cust_eint.h>
+#include <mach/cust_gpio_usage.h>
+#include <mach/cust_eint.h>
 //----------------------------------------------------------------------test
 #if 0
 #define CUST_EINT_POLARITY_LOW              0

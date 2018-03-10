@@ -68,7 +68,7 @@
 
 #include <linux/proc_fs.h>
 #include "../../../../../../kernel/drivers/mmc/card/queue.h"
-#include "partition_define.h"
+#include <mach/partition_define.h>
 #include <mach/emi_mpu.h>
 #include <mach/memory.h>
 #ifdef CONFIG_MTK_AEE_FEATURE
@@ -83,15 +83,15 @@
 #include <mach/mt_clkmgr.h>
 //#include "mach/mt6575_clkmgr_internal.h"
 #include <mach/eint.h>
-#include <cust_eint.h>
-#include <cust_power.h>
+#include <mach/cust_eint.h>
+#include <mach/cust_power.h>
 //#define MSDC_POWER_MC1 MSDC_VMC //Don't define this in local code!!!!!!
 //#define MSDC_POWER_MC2 MSDC_VGP6 //Don't define this in local code!!!!!!
 #endif
 //static struct workqueue_struct *workqueue;
 
 #include <mach/mt_storage_logger.h>
-#include "partition_define.h"
+#include <mach/partition_define.h>
 
 #define EXT_CSD_BOOT_SIZE_MULT          226 /* R */
 #define EXT_CSD_RPMB_SIZE_MULT          168 /* R */
