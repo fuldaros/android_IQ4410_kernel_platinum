@@ -28,7 +28,7 @@
 #include <linux/module.h>
 #include <mach/mtk_wcn_cmb_stub.h>
 
-#include <cust_gpio_usage.h>
+#include "cust_gpio_usage.h"
 //#include <mach/mt6573_pll.h> /* clr_device_working_ability, MT65XX_PDN_PERI_UART3, DEEP_IDLE_STATE, MT65XX_PDN_PERI_MSDC2 */
 
 #include <mach/mt_dcm.h>
