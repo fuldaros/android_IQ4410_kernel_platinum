@@ -1,7 +1,7 @@
 #include "accdet.h"
 #include <mach/mt_boot.h>
-#include <cust_eint.h>
-#include <cust_gpio_usage.h>
+#include <mach/cust_eint.h>
+#include <mach/cust_gpio_usage.h>
 #include <mach/mt_gpio.h>
 
 #define SW_WORK_AROUND_ACCDET_REMOTE_BUTTON_ISSUE
