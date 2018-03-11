@@ -17,7 +17,7 @@ lib_obj += $(crypto_obj)
 lib_obj += auth/sec_wrapper.o
 endif
 
-obj-y += sec.o
+obj-m += sec.o
 
 # HEADER FILES
 EXTRA_CFLAGS += -I$(src) -I$(src)/inc

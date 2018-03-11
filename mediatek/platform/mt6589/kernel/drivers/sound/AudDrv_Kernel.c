@@ -131,11 +131,6 @@ extern int cust_matv_gpio_off(void);
 #define AFE_INT_TIMEOUT       (10)
 #define AFE_UL_TIMEOUT       (10)
 
-#ifdef MTK_3MIC_SUPPORT
-// add for 3 mic switch enable , GPIO is not fixed
-#define  GPIO_MIC_ANALOGSWITCH_EN (116)
-#endif
-
 /*****************************************************************************
 *           V A R I A B L E     D E L A R A T I O N
 *******************************************************************************/
@@ -746,13 +741,12 @@ void Auddrv_DL_Interrupt_Handler(void)  // irq1 ISR handler
     if((Afe_consumed_bytes & 0x1f) != 0 ){
         PRINTK_AUDDRV("[Auddrv] DMA address is not aligned 32 bytes \n");
      }
-
      /*
      PRINTK_AUDDRV("+Auddrv_DL_Interrupt_Handler ReadIdx:%x WriteIdx:%x, DataRemained:%x, Afe_consumed_bytes:%x HW_memory_index = %x \n",
          Afe_Block->u4DMAReadIdx,Afe_Block->u4WriteIdx,Afe_Block->u4DataRemained,Afe_consumed_bytes,HW_memory_index);
          */
 
-     if(Afe_Block->u4DataRemained < Afe_consumed_bytes || Afe_Block->u4DataRemained <= 0 ||Afe_Block->u4DataRemained  > Afe_Block->u4BufferSize || AudIrqReset)
+     if(Afe_Block->u4DataRemained < Afe_consumed_bytes || Afe_Block->u4DataRemained == 0 || AudIrqReset)
      {
          // buffer underflow --> clear  whole buffer
          memset(Afe_Block->pucVirtBufAddr,0,Afe_Block->u4BufferSize);
@@ -925,15 +919,8 @@ static int AudDrv_probe(struct platform_device *dev)
    #endif
 
    PRINTK_AUDDRV("-AudDrv_probe \n");
+   power_init();
    Speaker_Init();
-   if(Auddrv_First_bootup == true)
-   {
-       power_init();
-   }
-   else
-   {
-
-   }
    return 0;
 }
 
@@ -2458,33 +2445,7 @@ static long AudDrv_ioctl(struct file *fp, unsigned int cmd, unsigned long arg)
             AuddrvAeeEnable = arg;
             break;
         }
-        #ifdef MTK_3MIC_SUPPORT
-        case YUSU_INFO_FROM_USER:
-        {
-            // get infor data from user space
-            struct _Info_Data InfoData;
-            PRINTK_AUDDRV("YUSU_INFO_FROM_USER\n");
-            if(copy_from_user((void *)(&InfoData), (const void __user *)( arg), sizeof(InfoData)))
-            {
-                return -EFAULT;
-            }
-            PRINTK_AUDDRV("YUSU_INFO_FROM_USER  Info:%d, param1:%d, param2:%d\n",InfoData.info, InfoData.param1, InfoData.param2);
-            switch(InfoData.info)
-            {
-            case INFO_U2K_MICANA_SWITCH:
-                PRINTK_AUDDRV("YUSU_INFO_FROM_USER INFO_U2K_MICANA_SWITCH InfoData.param1 = %d\n",InfoData.param1);
-                mt_set_gpio_dir(116,GPIO_DIR_OUT); // output
-                mt_set_gpio_out(116,InfoData.param1);
-                break;
-            default:
-                PRINTK_AUDDRV("YUSU_INFO_FROM_USER default \n");
-                break;
-            }
-        }
-        #endif
-
-        default:
-        {
+        default:{
             PRINTK_AUD_ERROR("AudDrv Fail IOCTL command no such ioctl cmd = %x \n",cmd);
             ret = -1;
             break;
@@ -2549,17 +2510,10 @@ static ssize_t AudDrv_write(struct file *fp, const char __user *data, size_t cou
        spin_lock_irqsave(&auddrv_DLCtl_lock, flags);
        copy_size = Afe_Block->u4BufferSize - Afe_Block->u4DataRemained;  //  free space of the buffer
        spin_unlock_irqrestore(&auddrv_DLCtl_lock, flags);
-       if(count <=  copy_size )
+       if(count <= (kal_uint32) copy_size)
        {
-           if(copy_size < 0)
-           {
-               copy_size = 0;
-               msleep(DL1_Interrupt_Interval>>1);
-           }
-           else
-           {
-               copy_size = count;
-           }
+           copy_size = count;
+           //PRINTK_AUDDRV("AudDrv_write copy_size:%x \n", copy_size);	// (free  space of buffer)
        }
 
        if(copy_size != 0)
@@ -3088,17 +3042,6 @@ static struct miscdevice AudDrv_audio_device = {
    .fops = &AudDrv_fops,
 };
 
-struct dev_pm_ops Auddrv_pm_ops = {
-    .suspend = AudDrv_suspend,
-    .resume = AudDrv_resume,
-    .freeze = AudDrv_suspend,
-    .thaw = AudDrv_resume,
-    .poweroff = NULL,
-    .restore = AudDrv_resume,
-    .restore_noirq = NULL,
-};
-
-
 /***************************************************************************
  * FUNCTION
  *  AudDrv_mod_init / AudDrv_mod_exit
@@ -3115,9 +3058,6 @@ static struct platform_driver AudDrv_driver = {
    .suspend	 = AudDrv_suspend,
    .resume	 = AudDrv_resume,
    .driver   = {
-#ifdef CONFIG_PM
-        .pm     = &Auddrv_pm_ops,
-#endif
        .name = auddrv_name,
        },
 };

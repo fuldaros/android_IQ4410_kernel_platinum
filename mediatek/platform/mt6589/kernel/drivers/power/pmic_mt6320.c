@@ -17,7 +17,7 @@
  * James Lo
  *
  ****************************************************************************/
-#include <generated/autoconf.h>
+#include <linux/autoconf.h>
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/module.h>
@@ -57,7 +57,7 @@
 
 #include "mt6320_battery.h"
 
-#include <mach/mtk_kpd.h>
+#include <mtk_kpd.h>
 
 #if defined (MTK_KERNEL_POWER_OFF_CHARGING)
 #include <mach/mt_boot.h>
@@ -86,8 +86,8 @@ static void disable_pll(int id, char *mod_name)
 //----------------------------------------------------------------------
 #endif
 
-#include <mach/cust_gpio_usage.h>
-#include <mach/cust_eint.h>
+#include <cust_gpio_usage.h>
+#include <cust_eint.h>
 //----------------------------------------------------------------------test
 #if 0
 #define CUST_EINT_POLARITY_LOW              0
@@ -842,7 +842,7 @@ void cust_pmic_interrupt_en_setting(void)
     upmu_set_rg_int_en_vproc(0);
     upmu_set_rg_int_en_rtc(1);
     upmu_set_rg_int_en_audio(0);
-    //upmu_set_rg_int_en_accdet(1);
+    upmu_set_rg_int_en_accdet(1);
     upmu_set_rg_int_en_homekey(1);
     upmu_set_rg_int_en_ldo(0);    
 }

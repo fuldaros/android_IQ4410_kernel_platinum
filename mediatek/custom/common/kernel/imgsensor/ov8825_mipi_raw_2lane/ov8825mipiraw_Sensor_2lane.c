@@ -92,7 +92,7 @@ void OV8825_write_shutter(kal_uint32 shutter)
 			line_length = OV8825_PV_PERIOD_PIXEL_NUMS + ov8825.DummyPixels;
 			max_shutter = OV8825_PV_PERIOD_LINE_NUMS + ov8825.DummyLines ;
 		}
-		else if( SENSOR_MODE_VIDEO == ov8825.sensorMode ) 
+		else if( SENSOR_MODE_VIDEO == ov8825.sensorMode ) //add for video_6M setting
 		{
 			line_length = OV8825_VIDEO_PERIOD_PIXEL_NUMS + ov8825.DummyPixels;
 			max_shutter = OV8825_VIDEO_PERIOD_LINE_NUMS + ov8825.DummyLines ;
@@ -1410,12 +1410,7 @@ UINT32 OV8825Open(void)
 	ov8825.DummyPixels= 0;
 
 	ov8825.pvPclk =  (13867);   
-
-#ifdef VIDEO_PREVIEW_SYNC
-	ov8825.videoPclk = (13867);//video use preview setting
-#else
 	ov8825.videoPclk = (21667); //3.4M video  4:3
-#endif
 	
 	spin_unlock(&ov8825mipiraw_drv_lock);
 
@@ -1959,12 +1954,7 @@ UINT32 OV8825Control(MSDK_SCENARIO_ID_ENUM ScenarioId, MSDK_SENSOR_EXPOSURE_WIND
             OV8825Preview(pImageWindow, pSensorConfigData);
             break;
         case MSDK_SCENARIO_ID_VIDEO_PREVIEW:
-#ifdef VIDEO_PREVIEW_SYNC	
-			OV8825DB("OV8825 VIDEO_PREVIEW_SYNC\n");
-            OV8825Preview(pImageWindow, pSensorConfigData);
-#else
 			OV8825Video(pImageWindow, pSensorConfigData);
-#endif
 			break;   
         case MSDK_SCENARIO_ID_CAMERA_CAPTURE_JPEG:
 		case MSDK_SCENARIO_ID_CAMERA_ZSD:
@@ -2115,11 +2105,7 @@ UINT32 OV8825MIPISetMaxFramerateByScenario(MSDK_SCENARIO_ID_ENUM scenarioId, MUI
 			OV8825_SetDummy(0, dummyLine);			
 			break;			
 		case MSDK_SCENARIO_ID_VIDEO_PREVIEW:
-#ifdef VIDEO_PREVIEW_SYNC
-			pclk = 138670000;
-#else
-			pclk = 216670000;
-#endif
+			pclk = 147330000;
 			lineLength = OV8825_VIDEO_PERIOD_PIXEL_NUMS;
 			frameHeight = (10 * pclk)/frameRate/lineLength;
 			dummyLine = frameHeight - OV8825_VIDEO_PERIOD_LINE_NUMS;
@@ -2133,7 +2119,7 @@ UINT32 OV8825MIPISetMaxFramerateByScenario(MSDK_SCENARIO_ID_ENUM scenarioId, MUI
 			 break;
 		case MSDK_SCENARIO_ID_CAMERA_CAPTURE_JPEG:
 		case MSDK_SCENARIO_ID_CAMERA_ZSD:			
-			pclk = 216670000;
+			pclk = 138670000;
 			lineLength = OV8825_FULL_PERIOD_PIXEL_NUMS;
 			frameHeight = (10 * pclk)/frameRate/lineLength;
 			dummyLine = frameHeight - OV8825_FULL_PERIOD_LINE_NUMS;
@@ -2219,11 +2205,7 @@ UINT32 OV8825FeatureControl(MSDK_SENSOR_FEATURE_ENUM FeatureId,
 					*pFeatureParaLen=4;
 					break;
 				case MSDK_SCENARIO_ID_VIDEO_PREVIEW:
-#ifdef VIDEO_PREVIEW_SYNC	
-					*pFeatureReturnPara32 = 138670000;
-#else
 					*pFeatureReturnPara32 = 216670000;
-#endif
 					*pFeatureParaLen=4;
 					break;	 
 				case MSDK_SCENARIO_ID_CAMERA_CAPTURE_JPEG:

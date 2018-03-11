@@ -169,7 +169,7 @@ VAL_RESULT_T eVideoWaitEvent(
     }
     else if (-ERESTARTSYS == i4Ret) {
         MFV_LOGE("eVideoWaitEvent wake up by ERESTARTSYS");
-        status = VAL_RESULT_RESTARTSYS;
+        status = VAL_RESULT_NO_ERROR;
     }
     else if (i4Ret > 0) {
         status = VAL_RESULT_NO_ERROR;

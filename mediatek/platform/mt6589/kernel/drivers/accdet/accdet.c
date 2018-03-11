@@ -1,41 +1,7 @@
-/* Copyright Statement:
- *
- * This software/firmware and related documentation ("MediaTek Software") are
- * protected under relevant copyright laws. The information contained herein
- * is confidential and proprietary to MediaTek Inc. and/or its licensors.
- * Without the prior written permission of MediaTek inc. and/or its licensors,
- * any reproduction, modification, use or disclosure of MediaTek Software,
- * and information contained herein, in whole or in part, shall be strictly prohibited.
- *
- * MediaTek Inc. (C) 2012. All rights reserved.
- *
- * BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
- * THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
- * RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
- * AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
- * NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
- * SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
- * SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
- * THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
- * THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
- * CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
- * SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
- * STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
- * CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
- * AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
- * OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
- * MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
- *
- * The following software/firmware and/or related documentation ("MediaTek Software")
- * have been modified by MediaTek Inc. All revisions are subject to any receiver's
- * applicable license agreements with MediaTek Inc.
- */
 #include "accdet.h"
 #include <mach/mt_boot.h>
-#include <mach/cust_eint.h>
-#include <mach/cust_gpio_usage.h>
+#include <cust_eint.h>
+#include <cust_gpio_usage.h>
 #include <mach/mt_gpio.h>
 
 #define SW_WORK_AROUND_ACCDET_REMOTE_BUTTON_ISSUE
@@ -280,9 +246,9 @@ void inline disable_accdet(void)
 	
 	//disable accdet irq
 	pmic_pwrap_write(INT_CON_ACCDET_CLR, RG_ACCDET_IRQ_CLR);
+	mutex_lock(&accdet_eint_irq_sync_mutex);
 	clear_accdet_interrupt();
 	udelay(200);
-	mutex_lock(&accdet_eint_irq_sync_mutex);
 	while(pmic_pwrap_read(ACCDET_IRQ_STS) & IRQ_STATUS_BIT)
 	{
 		ACCDET_DEBUG("[Accdet]check_cable_type: Clear interrupt on-going....\n");
@@ -1431,7 +1397,12 @@ static inline void accdet_init(void)
 
 	ACCDET_DEBUG("ACCDET reset function test: reset finished!! \n\r");
 	pmic_pwrap_write(TOP_RST_ACCDET_CLR, ACCDET_RESET_CLR);
-		
+
+	//accdet IRQ enable,  PMIC driver has done this for accdet driver!!(pmic_mt6320.c)
+	pmic_pwrap_write(INT_CON_ACCDET_SET, RG_ACCDET_IRQ_SET);
+	ACCDET_DEBUG("[Accdet]accdet IRQ enable INT_CON_ACCDET=0x%x!\n", pmic_pwrap_read(INT_CON_ACCDET));	
+
+	
 	//init  pwm frequency and duty
     pmic_pwrap_write(ACCDET_PWM_WIDTH, REGISTER_VALUE(cust_headset_settings.pwm_width));
     pmic_pwrap_write(ACCDET_PWM_THRESH, REGISTER_VALUE(cust_headset_settings.pwm_thresh));
@@ -1453,10 +1424,7 @@ static inline void accdet_init(void)
     pmic_pwrap_write(ACCDET_DEBOUNCE1, cust_headset_settings.debounce1);
     pmic_pwrap_write(ACCDET_DEBOUNCE3, cust_headset_settings.debounce3);	
    #endif
-    pmic_pwrap_write(ACCDET_IRQ_STS, pmic_pwrap_read(ACCDET_IRQ_STS)&(~IRQ_CLR_BIT));
-	ACCDET_DEBUG("[Accdet]init:IRQ Clear bit:[0x%x]!\n", pmic_pwrap_read(ACCDET_IRQ_STS));
-	pmic_pwrap_write(INT_CON_ACCDET_SET, RG_ACCDET_IRQ_SET);
-	ACCDET_DEBUG("[Accdet]accdet IRQ enable INT_CON_ACCDET=0x%x!\n", pmic_pwrap_read(INT_CON_ACCDET));
+    
     #ifdef ACCDET_EINT
     // disable ACCDET unit
 	pre_state_swctrl = pmic_pwrap_read(ACCDET_STATE_SWCTRL);
@@ -2078,7 +2046,6 @@ static int accdet_resume(struct platform_device *dev) // wake up
 
     return 0;
 }
-
 
 static struct platform_driver accdet_driver = {
 	.probe		= accdet_probe,	

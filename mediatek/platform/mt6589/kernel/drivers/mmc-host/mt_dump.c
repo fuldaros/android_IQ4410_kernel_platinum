@@ -24,7 +24,7 @@ MODULE_LICENSE("GPL");
 /* some marco will be reuse with mmc subsystem */
 
 #ifdef MTK_EMMC_SUPPORT
-#include <mach/partition_define.h>
+#include "partition_define.h"
 #endif
 char test_kdump[]={6,5,8,9,'k','d','u','m','p','t','e','s','t'};
 //==============

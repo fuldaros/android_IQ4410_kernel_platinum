@@ -27,7 +27,7 @@
 #define SUPPORT_SYSRQ   /*used in serial_core.h*/
 #endif
 /*---------------------------------------------------------------------------*/
-#include <generated/autoconf.h>
+#include <linux/autoconf.h>
 #include <linux/platform_device.h>
 #include <linux/module.h>
 #include <linux/ioport.h>

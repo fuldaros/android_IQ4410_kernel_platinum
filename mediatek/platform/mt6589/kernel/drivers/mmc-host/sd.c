@@ -1,39 +1,4 @@
-/* Copyright Statement:
- *
- * This software/firmware and related documentation ("MediaTek Software") are
- * protected under relevant copyright laws. The information contained herein
- * is confidential and proprietary to MediaTek Inc. and/or its licensors.
- * Without the prior written permission of MediaTek inc. and/or its licensors,
- * any reproduction, modification, use or disclosure of MediaTek Software,
- * and information contained herein, in whole or in part, shall be strictly prohibited.
- *
- * MediaTek Inc. (C) 2010. All rights reserved.
- *
- * BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
- * THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
- * RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
- * AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
- * NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
- * SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
- * SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
- * THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
- * THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
- * CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
- * SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
- * STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
- * CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
- * AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
- * OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
- * MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
- *
- * The following software/firmware and/or related documentation ("MediaTek Software")
- * have been modified by MediaTek Inc. All revisions are subject to any receiver's
- * applicable license agreements with MediaTek Inc.
- */
-
-#include <generated/autoconf.h>
+#include <linux/autoconf.h>
 #include <linux/module.h>
 #include <linux/moduleparam.h>
 #include <linux/init.h>
@@ -68,7 +33,7 @@
 
 #include <linux/proc_fs.h>
 #include "../../../../../../kernel/drivers/mmc/card/queue.h"
-#include <mach/partition_define.h>
+#include "partition_define.h"
 #include <mach/emi_mpu.h>
 #include <mach/memory.h>
 #ifdef CONFIG_MTK_AEE_FEATURE
@@ -83,15 +48,15 @@
 #include <mach/mt_clkmgr.h>
 //#include "mach/mt6575_clkmgr_internal.h"
 #include <mach/eint.h>
-#include <mach/cust_eint.h>
-#include <mach/cust_power.h>
+#include <cust_eint.h>
+#include <cust_power.h>
 //#define MSDC_POWER_MC1 MSDC_VMC //Don't define this in local code!!!!!!
 //#define MSDC_POWER_MC2 MSDC_VGP6 //Don't define this in local code!!!!!!
 #endif
 //static struct workqueue_struct *workqueue;
 
 #include <mach/mt_storage_logger.h>
-#include <mach/partition_define.h>
+#include "partition_define.h"
 
 #define EXT_CSD_BOOT_SIZE_MULT          226 /* R */
 #define EXT_CSD_RPMB_SIZE_MULT          168 /* R */
@@ -179,12 +144,6 @@ struct mmc_blk_data {
 
 #define WRITE_TUNE_HS_MAX_TIME 	(2*32)
 #define WRITE_TUNE_UHS_MAX_TIME (2*32*8)
-
-#ifdef USER_BUILD_KERNEL
-#define SDIO_ERROR_OUT_INTERVAL    100
-#else
-#define SDIO_ERROR_OUT_INTERVAL    5
-#endif
 
 #ifdef MT_SD_DEBUG
 static struct msdc_regs *msdc_reg[HOST_MAX_NUM];
@@ -1490,8 +1449,6 @@ static void msdc_gate_clock(struct msdc_host* host, int delay)
     }
     else 
     {
-       if(is_card_sdio(host))
-           host->error = -EBUSY;
        ERR_MSG("[%s]: msdc%d, failed to gate clock, the clock is still needed by host, clk_gate_count=%d, delay=%d\n", __func__, host->id, host->clk_gate_count, delay);
     }
     spin_unlock_irqrestore(&host->clk_gate_lock, flags); 
@@ -1510,8 +1467,6 @@ static void msdc_suspend_clock(struct msdc_host* host)
     }
     else 
     {
-        if(is_card_sdio(host))
-            host->error = -EBUSY;
        ERR_MSG("[%s]: msdc%d, the clock is still needed by host, clk_gate_count=%d\n", __func__, host->id, host->clk_gate_count);
     }
     spin_unlock_irqrestore(&host->clk_gate_lock, flags); 
@@ -1760,15 +1715,8 @@ static void msdc_set_mclk(struct msdc_host *host, int ddr, u32 hz)
 
     if (!hz) { // set mmc system clock to 0 
         printk(KERN_ERR "msdc%d -> set mclk to 0",host->id);  // fix me: need to set to 0
-        if(is_card_sdio(host)){
+        if(is_card_sdio(host))
             host->saved_para.hz = hz;
-#ifdef SDIO_ERROR_BYPASS    
-            host->sdio_error = 0; 
-            memset(&host->sdio_error_rec.cmd, 0, sizeof(struct mmc_command));  
-            memset(&host->sdio_error_rec.data, 0, sizeof(struct mmc_data));
-            memset(&host->sdio_error_rec.stop, 0, sizeof(struct mmc_command));
-#endif
-        }
         host->mclk = 0;
         msdc_reset_hw(host->id);
         return;
@@ -2793,7 +2741,6 @@ static void msdc_pm(pm_message_t state, void *data)
 			msdc_pin_reset (host, MSDC_PIN_PULL_UP);
 			msdc_pin_config(host, MSDC_PIN_PULL_UP);
 			host->power_control(host,1);
-			mdelay(10);
 			msdc_restore_emmc_setting(host);
 		}
             (void)mmc_resume_host(host->mmc);
@@ -2804,14 +2751,7 @@ static void msdc_pm(pm_message_t state, void *data)
     }
 
 end:
-#ifdef SDIO_ERROR_BYPASS    
-    if(is_card_sdio(host)){
-        host->sdio_error = 0;	
-        memset(&host->sdio_error_rec.cmd, 0, sizeof(struct mmc_command));
-        memset(&host->sdio_error_rec.data, 0, sizeof(struct mmc_data));
-        memset(&host->sdio_error_rec.stop, 0, sizeof(struct mmc_command));
-    }
-#endif        
+        	    
     // gate clock at the last step when suspend.
     if ((evt == PM_EVENT_SUSPEND) || (evt == PM_EVENT_USER_SUSPEND)) {
         msdc_gate_clock(host, 0);
@@ -5360,16 +5300,7 @@ static void msdc_dump_trans_error(struct msdc_host   *host,
 	   if((data->flags & MMC_DATA_READ) && (host->read_timeout_uhs104))
 	   		host->read_timeout_uhs104 = 0;
 	   }
-#ifdef SDIO_ERROR_BYPASS  		
-    if(is_card_sdio(host)&&(host->sdio_error!=-EIO)&&(cmd->opcode==53)){
-       host->sdio_error = -EIO;  
-       memcpy(&(host->sdio_error_rec.cmd), cmd, sizeof(struct mmc_command));
-       if(data)
-           memcpy(&(host->sdio_error_rec.data), data, sizeof(struct mmc_data));
-       if(stop)
-           memcpy(&(host->sdio_error_rec.stop), stop, sizeof(struct mmc_command));
-    }
-#endif    
+		
 }
 
 /* ops.request */
@@ -5385,9 +5316,6 @@ static void msdc_ops_request_legacy(struct mmc_host *mmc, struct mmc_request *mr
     //=== for sdio profile ===
     u32 old_H32 = 0, old_L32 = 0, new_H32 = 0, new_L32 = 0;
     u32 ticks = 0, opcode = 0, sizes = 0, bRx = 0; 
-#ifdef SDIO_ERROR_BYPASS      
-    static int sdio_error_count = 0;
-#endif    
     msdc_reset_tune_counter(host,all_counter);      
     if(host->mrq){
         ERR_MSG("XXX host->mrq<0x%.8x> cmd<%d>arg<0x%x>", (int)host->mrq,host->mrq->cmd->opcode,host->mrq->cmd->arg);   
@@ -5408,22 +5336,7 @@ static void msdc_ops_request_legacy(struct mmc_host *mmc, struct mmc_request *mr
 
         return;
     }
-#ifdef SDIO_ERROR_BYPASS    
-    if (mrq->cmd->opcode == 53 && host->sdio_error == -EIO){    // sdio error bypass
-        if((sdio_error_count++)%SDIO_ERROR_OUT_INTERVAL == 0){  
-            if(host->sdio_error_rec.cmd.opcode == 53){
-                cmd = &host->sdio_error_rec.cmd;        
-                data = &host->sdio_error_rec.data;
-                if(!data->error)
-                    data = NULL;
-                if (data) stop = &host->sdio_error_rec.stop;
-                    msdc_dump_trans_error(host, cmd, data, stop); 
-                goto sdio_error_out;    
-            }
-       }
-    }
-#endif
-        
+      
     /* start to process */
     spin_lock(&host->lock);  
 	host->power_cycle_enable = 1;
@@ -5431,7 +5344,7 @@ static void msdc_ops_request_legacy(struct mmc_host *mmc, struct mmc_request *mr
     cmd = mrq->cmd;      
     data = mrq->cmd->data;
     if (data) stop = data->stop;
-    
+
     msdc_ungate_clock(host);  // set sw flag 
          
     if (sdio_pro_enable) {  //=== for sdio profile ===  
@@ -5615,7 +5528,7 @@ out:
 
     msdc_gate_clock(host, 1); // clear flag. 
     spin_unlock(&host->lock);
-sdio_error_out:
+
     mmc_request_done(mmc, mrq);
      
    return;
@@ -7293,12 +7206,6 @@ static int msdc_drv_probe(struct platform_device *pdev)
     host->power_mode = MMC_POWER_OFF;
 	host->power_control = NULL;
 	host->power_switch	= NULL;
-#ifdef SDIO_ERROR_BYPASS      
-    host->sdio_error = 0;
-    memset(&host->sdio_error_rec.cmd, 0, sizeof(struct mmc_command));
-    memset(&host->sdio_error_rec.data, 0, sizeof(struct mmc_data));
-    memset(&host->sdio_error_rec.stop, 0, sizeof(struct mmc_command));
-#endif    
 	#ifndef FPGA_PLATFORM
 	if(host->id == 1)
 		host->power_domain = MSDC_POWER_MC1;
@@ -7485,10 +7392,6 @@ static int msdc_drv_suspend(struct platform_device *pdev, pm_message_t state)
     // WIFI slot should be off when enter suspend
     if (mmc && state.event == PM_EVENT_SUSPEND && (!(host->hw->flags & MSDC_SYS_SUSPEND))) {
         msdc_suspend_clock(host);
-        if(host->error == -EBUSY){
-            ret = host->error;
-            host->error = 0;
-        }
     }
 
     if (is_card_sdio(host)) 
@@ -7514,10 +7417,6 @@ static int msdc_drv_suspend(struct platform_device *pdev, pm_message_t state)
                 host->saved_para.iocon = sdr_read32(MSDC_IOCON);
                 host->saved_para.ddr = host->ddr;
                 msdc_gate_clock(host, 0);
-                if(host->error == -EBUSY){
-                    ret = host->error;
-                    host->error = 0;
-                }
             }
             ERR_MSG("msdc3 suspend cur_cfg=%x, save_cfg=%x, cur_hz=%d, save_hz=%d", sdr_read32(MSDC_CFG), host->saved_para.msdc_cfg, host->mclk, host->saved_para.hz);
         }

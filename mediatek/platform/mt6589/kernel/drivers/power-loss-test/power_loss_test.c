@@ -1,7 +1,7 @@
 #include <linux/init.h>
 #include <linux/module.h>
 #include <linux/kernel.h>
-#include <generated/autoconf.h>
+#include <linux/autoconf.h>
 #include <linux/sched.h>
 #include <linux/time.h>
 #include <linux/fs.h>

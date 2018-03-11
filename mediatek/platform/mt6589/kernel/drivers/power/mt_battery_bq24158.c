@@ -2059,7 +2059,7 @@ void pchr_turn_off_charging_bq24158 (void)
             printk("[BATTERY] pchr_turn_off_charging_bq24158 !\r\n");
         }
 
-        bq24158_config_interface_reg(0x01,0x78);      //0xbc->ox78 for CE=0 according to BQ24158 IC design notes and pre-charging could be limited to 500mA
+        bq24158_config_interface_reg(0x01,0xbc);    
         
 #if defined(CONFIG_USB_MTK_HDRC_HCD)
     }

@@ -11,8 +11,6 @@
 
 #include <mach/m4u.h>
 #include <mach/mt_smi.h>
-#include <mach/mt_gpufreq.h>    /*Adjust GPU OD or not*/
-
 #include "smi_reg.h"
 #include "smi_common.h"
 
@@ -256,7 +254,7 @@ int smi_bwc_config( MTK_SMI_BWC_CONFIG* p_conf )
         M4U_WriteReg32( 0x0, REG_SMI_L1ARB4, 0x9a7 );   //larb4 isp
 
         #if 1 /*Jackie custom*/
-        //M4U_WriteReg32( 0x0, REG_SMI_BUS_SEL, 0x140 );
+        M4U_WriteReg32( 0x0, REG_SMI_BUS_SEL, 0x140 );
         //M4U_WriteReg32( 0x0, REG_SMI_READ_FIFO_TH, 0x1560 );
         M4U_WriteReg32( LARB0_BASE, 0x14, 0x400420 );
         M4U_WriteReg32( LARB1_BASE, 0x14, 0x400420 );
@@ -276,7 +274,7 @@ int smi_bwc_config( MTK_SMI_BWC_CONFIG* p_conf )
         M4U_WriteReg32( 0x0, REG_SMI_L1ARB4, 0x9a7 );   //larb4 isp
 
         #if 1/*Jackie custom*/
-        //M4U_WriteReg32( 0x0, REG_SMI_BUS_SEL, 0x140 );
+        M4U_WriteReg32( 0x0, REG_SMI_BUS_SEL, 0x140 );
         //M4U_WriteReg32( 0x0, REG_SMI_READ_FIFO_TH, 0x1560 );
         M4U_WriteReg32( LARB0_BASE, 0x14, 0x400420 );
         M4U_WriteReg32( LARB1_BASE, 0x14, 0x400420 );
@@ -297,7 +295,7 @@ int smi_bwc_config( MTK_SMI_BWC_CONFIG* p_conf )
         M4U_WriteReg32( 0x0, REG_SMI_L1ARB4, 0x0   );   //larb4 isp:default
 
         #if 1/*Jackie custom*/
-        //M4U_WriteReg32( 0x0, REG_SMI_BUS_SEL, 0x140 );
+        M4U_WriteReg32( 0x0, REG_SMI_BUS_SEL, 0x140 );
         //M4U_WriteReg32( 0x0, REG_SMI_READ_FIFO_TH, 0xD60 );
         M4U_WriteReg32( LARB0_BASE, 0x18, 0x420 );       
         M4U_WriteReg32( LARB1_BASE, 0x18, 0x420 );       
@@ -310,8 +308,8 @@ int smi_bwc_config( MTK_SMI_BWC_CONFIG* p_conf )
         
         
     case SMI_BWC_SCEN_NORMAL:
-    default:
         SMIMSG( "[SMI_PROFILE] : %s\n", "SMI_BWC_SCEN_NORMAL");
+    default:
         M4U_WriteReg32( 0x0, REG_SMI_L1ARB0, 0x0   );   //larb0 venc:default
         M4U_WriteReg32( 0x0, REG_SMI_L1ARB1, 0x0   );   //larb1 vdec:default
         M4U_WriteReg32( 0x0, REG_SMI_L1ARB2, 0x0   );   //larb2 disp:default
@@ -319,7 +317,7 @@ int smi_bwc_config( MTK_SMI_BWC_CONFIG* p_conf )
         M4U_WriteReg32( 0x0, REG_SMI_L1ARB4, 0x0   );   //larb4 isp:default
 
         #if 1/*Jackie custom*/
-        //M4U_WriteReg32( 0x0, REG_SMI_BUS_SEL, 0x140 );
+        M4U_WriteReg32( 0x0, REG_SMI_BUS_SEL, 0x140 );
         //M4U_WriteReg32( 0x0, REG_SMI_READ_FIFO_TH, 0xD60 );
         M4U_WriteReg32( LARB0_BASE, 0x18, 0x420 );       
         M4U_WriteReg32( LARB1_BASE, 0x18, 0x420 );       
@@ -346,7 +344,7 @@ int smi_bwc_config( MTK_SMI_BWC_CONFIG* p_conf )
         
     }
 
-    #if 0 /*dump message*/
+    #if 1 /*dump message*/
     {
         #define _SMI_BC_DUMP_REG( _base_, _off_ ) \
             SMIMSG( "\t[SMI_REG] %s + %s = 0x%08X\n", #_base_, #_off_, M4U_ReadReg32( _base_, _off_ ) );
@@ -380,18 +378,6 @@ int smi_bwc_config( MTK_SMI_BWC_CONFIG* p_conf )
     for(i=0; i<SMI_LARB_NR; i++){
         larb_clock_off(i);
     }
-
-    /*.............................................................................
-        GPU OD Adjust 
-      .............................................................................*/
-    if( p_conf->b_gpu_od ){
-        mt_gpufreq_keep_frequency_non_OD (false);
-        SMIMSG( "[SMI_BWC] : GPU OD ON!\n");
-    } else {
-        mt_gpufreq_keep_frequency_non_OD (true);
-        SMIMSG( "[SMI_BWC] : GPU OD OFF!\n");
-    }
-    
 
     return 0;
     

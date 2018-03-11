@@ -11,7 +11,7 @@
 *                           Include Files                                    *
 *============================================================================*/
 
-#include <generated/autoconf.h>
+#include <linux/autoconf.h>
 #include <linux/module.h>
 #include <linux/mm.h>
 #include <linux/init.h>

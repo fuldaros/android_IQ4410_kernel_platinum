@@ -271,7 +271,7 @@ void disp_bls_update_gamma_lut(void)
         {  
             CurVal = g_gamma_index.entry[index][Count];
             if(LastVal > CurVal)
-        {  
+            {
                 MSB++;
             }
             //get GammaTable Value
@@ -299,7 +299,7 @@ void disp_bls_update_gamma_lut(void)
     
     /* Set Gamma Last point*/    
     DISP_REG_SET(DISP_REG_BLS_GAMMA_SETTING, 0x00000001);
-
+    
     //FIXME! use 256th as 257th 
     LastVal = (((g_gamma_lut.entry[0][255]>>2)<<20) | ((g_gamma_lut.entry[1][255]>>2)<<10) | (g_gamma_lut.entry[2][255]>>2));
     DISP_REG_SET(DISP_REG_BLS_GAMMA_BOUNDARY, LastVal);

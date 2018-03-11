@@ -139,7 +139,6 @@ static SENSOR_FUNCTION_STRUCT *g_pInvokeSensorFunc[KDIMGSENSOR_MAX_INVOKE_DRIVER
 static BOOL g_bEnableDriver[KDIMGSENSOR_MAX_INVOKE_DRIVERS] = {FALSE,FALSE};
 static CAMERA_DUAL_CAMERA_SENSOR_ENUM g_invokeSocketIdx[KDIMGSENSOR_MAX_INVOKE_DRIVERS] = {DUAL_CAMERA_NONE_SENSOR,DUAL_CAMERA_NONE_SENSOR};
 static char g_invokeSensorNameStr[KDIMGSENSOR_MAX_INVOKE_DRIVERS][32] = {KDIMGSENSOR_NOSENSOR,KDIMGSENSOR_NOSENSOR};
-static int g_SensorExistStatus[3]={0,0,0};
 
 /*=============================================================================
 
@@ -1084,7 +1083,7 @@ inline static int adopt_CAMERA_HW_CheckIsAlive(void)
 		        err = g_pSensorFunc->SensorFeatureControl(g_invokeSocketIdx[i], SENSOR_FEATURE_CHECK_SENSOR_ID, (MUINT8*)&sensorID, &retLen);
 		        if (sensorID == 0) {    //not implement this feature ID
 		            PK_DBG(" Not implement!!, use old open function to check\n");
-		            err = ERROR_SENSOR_CONNECT_FAIL;
+		            err = g_pSensorFunc->SensorOpen();
 		        }
 		        else if (sensorID == 0xFFFFFFFF) {    //fail to open the sensor
 		            PK_DBG(" No Sensor Found");
@@ -1094,19 +1093,6 @@ inline static int adopt_CAMERA_HW_CheckIsAlive(void)
 
 		            PK_DBG(" Sensor found ID = 0x%x\n", sensorID);
 		            err = ERROR_NONE;
-					switch (g_invokeSocketIdx[i]) {
-						case DUAL_CAMERA_MAIN_SENSOR:
-							g_SensorExistStatus[0] = 1;
-							break;
-						case DUAL_CAMERA_SUB_SENSOR:
-							g_SensorExistStatus[1] = 1;
-							break;
-						case DUAL_CAMERA_MAIN_2_SENSOR:
-							g_SensorExistStatus[2] = 1;
-							break;
-						default:
-							break;
-					}
 		        }
 		        if(ERROR_NONE != err)
 		        {
@@ -1118,15 +1104,14 @@ inline static int adopt_CAMERA_HW_CheckIsAlive(void)
     else {
         PK_DBG("ERROR:NULL g_pSensorFunc\n");
     }
-
+    //
+    kdModulePowerOn((CAMERA_DUAL_CAMERA_SENSOR_ENUM*)g_invokeSocketIdx, g_invokeSensorNameStr, false, CAMERA_HW_DRVNAME1);
     //
     //reset sensor state after power off
     err1 = g_pSensorFunc->SensorClose();
     if(ERROR_NONE != err1) {
         PK_DBG("SensorClose \n");
     }
-    //
-    kdModulePowerOn((CAMERA_DUAL_CAMERA_SENSOR_ENUM*)g_invokeSocketIdx, g_invokeSensorNameStr, false, CAMERA_HW_DRVNAME1);    
     //
     KD_IMGSENSOR_PROFILE("CheckIsAlive");
 
@@ -2165,71 +2150,6 @@ int iWriteTriggerReg(u16 a_u2Addr , u32 a_u4Data , u32 a_u4Bytes , u16 i2cId)
 }
 #endif
 
-/*******************************************************************************
-  * CAMERA_HW_Read_Main_Camera_Status()
-  * Used to detect main camera status
-  ********************************************************************************/
-static int  CAMERA_HW_Read_Main_Camera_Status(char *page, char **start, off_t off,
-                                                                                       int count, int *eof, void *data)
-{
-	char *p=page;
-	int len=0;
-	p += sprintf(page,"%d\n",g_SensorExistStatus[0]);
-
-	PK_DBG("g_SensorExistStatus[0] = %d\n", g_SensorExistStatus[0]);
-	*start = page + off;	
-	len = p - page;	
-	if (len > off)		
-		len -= off;	
-	else		
-		len = 0;        	
-	return len < count ? len  : count;
-
-}
-/*******************************************************************************
-  * CAMERA_HW_Read_Sub_Camera_Status()
-  * Used to detect main camera status
-  ********************************************************************************/
-static int  CAMERA_HW_Read_Sub_Camera_Status(char *page, char **start, off_t off,
-                                                                                       int count, int *eof, void *data)
-{
-	char *p=page;
-	int len=0;
-	p += sprintf(page,"%d\n",g_SensorExistStatus[1]);
-
-	PK_DBG(" g_SensorExistStatus[1] = %d\n", g_SensorExistStatus[1]);
-	*start = page + off;	
-	len = p - page;	
-	if (len > off)		
-		len -= off;	
-	else		
-		len = 0;        	
-	return len < count ? len  : count;
-
-}
-/*******************************************************************************
-  * CAMERA_HW_Read_3D_Camera_Status()
-  * Used to detect main camera status
-  ********************************************************************************/
-static int  CAMERA_HW_Read_3D_Camera_Status(char *page, char **start, off_t off,
-                                                                                       int count, int *eof, void *data)
-{
-	char *p=page;
-	int len=0;
-	p += sprintf(page,"%d\n",g_SensorExistStatus[2]);
-
-	PK_DBG("g_SensorExistStatus[2] = %d\n", g_SensorExistStatus[2]);
-	*start = page + off;	
-	len = p - page;	
-	if (len > off)		
-		len -= off;	
-	else		
-		len = 0;        	
-	return len < count ? len  : count;
-
-}
-
-
 
 /*******************************************************************************
   * CAMERA_HW_DumpReg_To_Proc()
@@ -2304,34 +2224,6 @@ static int  CAMERA_HW_Reg_Debug2( struct file *file, const char *buffer, unsigne
     return count;
 }
 
-static int  CAMERA_HW_Reg_Debug3( struct file *file, const char *buffer, unsigned long count,
-                                                                     void *data)
-{
-    char regBuf[64] = {'\0'};
-    u32 u4CopyBufSize = (count < (sizeof(regBuf) - 1)) ? (count) : (sizeof(regBuf) - 1);
-
-    MSDK_SENSOR_REG_INFO_STRUCT sensorReg;
-    memset(&sensorReg, 0, sizeof(MSDK_SENSOR_REG_INFO_STRUCT));
-
-    if (copy_from_user(regBuf, buffer, u4CopyBufSize))
-        return -EFAULT;
-
-    if (sscanf(regBuf, "%x %x",  &sensorReg.RegAddr, &sensorReg.RegData) == 2) {
-        if (g_pSensorFunc != NULL) {
-            g_pSensorFunc->SensorFeatureControl(DUAL_CAMERA_SUB_SENSOR, SENSOR_FEATURE_SET_REGISTER, (MUINT8*)&sensorReg, (MUINT32*)sizeof(MSDK_SENSOR_REG_INFO_STRUCT));
-            g_pSensorFunc->SensorFeatureControl(DUAL_CAMERA_SUB_SENSOR, SENSOR_FEATURE_GET_REGISTER, (MUINT8*)&sensorReg, (MUINT32*)sizeof(MSDK_SENSOR_REG_INFO_STRUCT));
-            PK_DBG("write addr = 0x%08x, data = 0x%08x\n", sensorReg.RegAddr, sensorReg.RegData);
-        }
-    }
-    else if (sscanf(regBuf, "%x", &sensorReg.RegAddr) == 1) {
-        if (g_pSensorFunc != NULL) {
-            g_pSensorFunc->SensorFeatureControl(DUAL_CAMERA_SUB_SENSOR, SENSOR_FEATURE_GET_REGISTER, (MUINT8*)&sensorReg, (MUINT32*)sizeof(MSDK_SENSOR_REG_INFO_STRUCT));
-            PK_DBG("read addr = 0x%08x, data = 0x%08x\n", sensorReg.RegAddr, sensorReg.RegData);
-        }
-    }
-
-    return count;
-}
 
 /*=======================================================================
   * platform driver
@@ -2387,46 +2279,6 @@ static int __init CAMERA_HW_i2C_init(void)
     else {
         PK_ERR("add /proc/driver/camsensor2 entry fail \n");
     }
-	//Register proc file for sub sensor register debug
-	prEntry = create_proc_entry("driver/camsensor3", 0, NULL);
-	if (prEntry) {
-			prEntry->read_proc = CAMERA_HW_DumpReg_To_Proc;
-			prEntry->write_proc = CAMERA_HW_Reg_Debug3;
-	}
-	else {
-			PK_ERR("add /proc/driver/camsensor entry fail \n");
-	}
-    //Register proc file for main sensor register debug
-    prEntry = create_proc_entry("driver/maincam_status", 0, NULL);
-    if (prEntry) {
-        prEntry->read_proc = CAMERA_HW_Read_Main_Camera_Status;
-        prEntry->write_proc = NULL;
-    }
-    else {
-        PK_ERR("add /proc/driver/maincam_status entry fail \n");
-    }
-
-    //Register proc file for sub sensor register debug
-    prEntry = create_proc_entry("driver/subcam_status", 0, NULL);
-    if (prEntry) {
-        prEntry->read_proc = CAMERA_HW_Read_Sub_Camera_Status;
-        prEntry->write_proc = NULL;
-    }
-    else {
-        PK_ERR("add /proc/driver/subcam_status entry fail \n");
-    }
-
-    //Register proc file for 3d sensor register debug
-    prEntry = create_proc_entry("driver/3dcam_status", 0, NULL);
-    if (prEntry) {
-        prEntry->read_proc = CAMERA_HW_Read_3D_Camera_Status;
-        prEntry->write_proc = NULL;
-    }
-    else {
-        PK_ERR("add /proc/driver/3dcam_status entry fail \n");
-    }
-
-	
     atomic_set(&g_CamHWOpend, 0); 
     atomic_set(&g_CamHWOpend2, 0);
     atomic_set(&g_CamDrvOpenCnt, 0);
