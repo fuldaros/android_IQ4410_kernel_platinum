@@ -7,7 +7,7 @@
 #include <mach/mt_clkmgr.h>
 
 #if defined(MTK_DT_SUPPORT) && !defined(EVDO_DT_SUPPORT)
-#include <cust_eint.h>
+#include <mach/cust_eint.h>
 extern void mt65xx_eint_unmask(unsigned int line);
 extern void mt65xx_eint_mask(unsigned int line);
 extern void mt65xx_eint_set_polarity(kal_uint8 eintno, kal_bool ACT_Polarity);

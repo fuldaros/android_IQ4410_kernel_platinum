@@ -7,7 +7,7 @@
 #ifndef _CUST_KPD_H_
 #define _CUST_KPD_H_
 #include <linux/input.h>
-//#include <cust_eint.h>
+//#include <mach/cust_eint.h>
 #define KPD_YES		1
 #define KPD_NO		0
 /* available keys (Linux keycodes) */

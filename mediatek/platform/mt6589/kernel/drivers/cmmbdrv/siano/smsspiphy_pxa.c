@@ -90,7 +90,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <mach/eint.h>
 #include <mach/mt_spi.h>
 #include <cust_gpio_usage.h>
-#include <cust_eint.h>
+#include <mach/cust_eint.h>
 
 
 #include <mach/irqs.h>
@@ -574,7 +574,7 @@ void *smsspiphy_init(void *context, void (*smsspi_interruptHandler) (void ),
 		goto error_sspinit;
 	}
 #ifdef PXA_310_LV
-	pxa3xx_mfp_set_afds(SMS_IRQ_GPIO, MFP_AF0, MFP_DS03X);              //xingyu ÉèÖÃinterrupt
+	pxa3xx_mfp_set_afds(SMS_IRQ_GPIO, MFP_AF0, MFP_DS03X);              //xingyu ï¿½ï¿½ï¿½ï¿½interrupt
 	pxa3xx_gpio_set_rising_edge_detect(SMS_IRQ_GPIO, 1);
 	pxa3xx_gpio_set_direction(SMS_IRQ_GPIO, GPIO_DIR_IN);
 #else /*PXA_310_LV */

@@ -1,5 +1,5 @@
 #include <linux/module.h>
-#include "partition_define.h"
+#include <mach/partition_define.h>
 struct excel_info PartInfo[PART_NUM]={
 			{"preloader",6291456,0x0, EMMC, 0,BOOT_1},
 			{"mbr",524288,0x600000, EMMC, 0,USER},

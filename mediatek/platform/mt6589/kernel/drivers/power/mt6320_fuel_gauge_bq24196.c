@@ -65,7 +65,7 @@
 #include <mach/mt_typedefs.h>
 #include <mach/hardware.h>
 
-#include <cust_fuel_gauge.h>
+#include <mach/cust_fuel_gauge.h>
 
 #include <mach/pmic_mt6320_sw.h>
 #include <mach/upmu_common.h>

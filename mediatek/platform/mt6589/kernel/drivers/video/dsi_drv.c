@@ -2345,7 +2345,7 @@ DSI_STATUS DSI_Write_T3_INS(DSI_T3_INS *t3)
 	return DSI_STATUS_OK;
 }
 
-DSI_STATUS DSI_TXRX_Control(bool cksm_en, 
+DSI_STATUS DSI_TXRX_Controls(bool cksm_en, 
                                   bool ecc_en, 
                                   unsigned char lane_num, 
                                   unsigned char vc_num,

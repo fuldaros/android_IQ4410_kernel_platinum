@@ -1,6 +1,6 @@
 /*===========================================================================*
 *                                                                            *
-*  main.c:  Master Transmitter/Receiver I²C Driver for LPC2138               *
+*  main.c:  Master Transmitter/Receiver Iï¿½C Driver for LPC2138               *
 *  Author:  V. Latapie                                                       *
 *  Date  :  14/06/07                                                         *
 *                                                                            *
@@ -11,7 +11,7 @@
 *                           Include Files                                    *
 *============================================================================*/
 
-#include <linux/autoconf.h>
+#include <generated/autoconf.h>
 #include <linux/module.h>
 #include <linux/mm.h>
 #include <linux/init.h>
@@ -58,13 +58,13 @@ volatile unsigned char transmission ;
 unsigned char rep_start_cntr;
 unsigned char  ptr[255];
 
-/* Semaphore for I²C access */
+/* Semaphore for Iï¿½C access */
 tmdlHdmiTxIWSemHandle_t gI2CSemaphore;
 
 /*===========================================================================*
 *                                                                            *
 *    FUNCTION NAME:    I2C_Init                                              *
-*    DESCRIPTION  :    I²C initialisation                                    *
+*    DESCRIPTION  :    Iï¿½C initialisation                                    *
 *                                                                            *
 *    INPUT   :         none                                                  *
 *    OUTPUT  :         none                                                  *
@@ -297,24 +297,24 @@ tmErrorCode_t Init_i2c(void)
   HDMI_I2C_LOG("hdmi, %s\n", __func__);
 
 #if 0
- /* Initialize I²C */
+ /* Initialize Iï¿½C */
   I2CONCLR = 0x6C;  /* Clear Control Set Register */
-  I2CONSET = 0x40;  /* Enable I²C */   
+  I2CONSET = 0x40;  /* Enable Iï¿½C */   
   
   /* Maximum speed for TDA9984 is 400 Khz */
-  /* 60 Khz = pclk / (I²CSCLH + I²CSCLL) with pclk = peripheral clock*/
+  /* 60 Khz = pclk / (Iï¿½CSCLH + Iï¿½CSCLL) with pclk = peripheral clock*/
   /* according to VBPDIV Fpclk = Fcclk/4 = 60/4 = 15 Mhz  */
-  /* so I²CSCLH + I²CSCLL = 37 */
+  /* so Iï¿½CSCLH + Iï¿½CSCLL = 37 */
   I2SCLH = 0x7D;
   I2SCLL = 0x7D;
  
-  /* Initialize VIC for I²C use */
-  VICIntEnable |= 0x200;  /* Enable I²C interruption */
-  VICVectCntl0 = 0x29;   /* Enable I²C canal in IRQ Mode */
+  /* Initialize VIC for Iï¿½C use */
+  VICIntEnable |= 0x200;  /* Enable Iï¿½C interruption */
+  VICVectCntl0 = 0x29;   /* Enable Iï¿½C canal in IRQ Mode */
   VICVectAddr0 = (unsigned long) I2C_ISR;
 
   #endif
-  /* Create the semaphore to protect I²C access */
+  /* Create the semaphore to protect Iï¿½C access */
   errCode = tmdlHdmiTxIWSemaphoreCreate(&gI2CSemaphore);
 
   return errCode;
@@ -544,7 +544,7 @@ tmErrorCode_t  i2cWrite(i2cRegisterType_t type_register,tmbslHdmiSysArgs_t *pSys
   tmErrorCode_t errCode;
   int           i;
  
-  /* Take the semaphore for I²C */
+  /* Take the semaphore for Iï¿½C */
   errCode = tmdlHdmiTxIWSemaphoreP(gI2CSemaphore);
   if(errCode)
   {
@@ -568,7 +568,7 @@ tmErrorCode_t  i2cWrite(i2cRegisterType_t type_register,tmbslHdmiSysArgs_t *pSys
     return errCode;
   }
 
-  /* Release the semaphore for I²C */
+  /* Release the semaphore for Iï¿½C */
   errCode = tmdlHdmiTxIWSemaphoreV(gI2CSemaphore);
   if(errCode)
   {
@@ -586,7 +586,7 @@ tmErrorCode_t  i2cRead(i2cRegisterType_t type_register,tmbslHdmiSysArgs_t *pSysA
 {
   tmErrorCode_t errCode;
 
-  /* Take the semaphore for I²C */
+  /* Take the semaphore for Iï¿½C */
   errCode = tmdlHdmiTxIWSemaphoreP(gI2CSemaphore);
   if(errCode)
   {
@@ -601,7 +601,7 @@ tmErrorCode_t  i2cRead(i2cRegisterType_t type_register,tmbslHdmiSysArgs_t *pSysA
     return errCode;
   }
 
-  /* Release the semaphore for I²C */
+  /* Release the semaphore for Iï¿½C */
   errCode = tmdlHdmiTxIWSemaphoreV(gI2CSemaphore);
   if(errCode)
   {
@@ -630,7 +630,7 @@ unsigned char i2cReadEdid(unsigned char seg_addr, unsigned char seg_ptr, unsigne
 
   HDMI_I2C_LOG("hdmi, %s\n", __func__);
 #if 0
-   /* Take the semaphore for I²C */
+   /* Take the semaphore for Iï¿½C */
    errCode = tmdlHdmiTxIWSemaphoreP(gI2CSemaphore);
    if(errCode)
    {
@@ -661,7 +661,7 @@ unsigned char i2cReadEdid(unsigned char seg_addr, unsigned char seg_ptr, unsigne
    while (transmission == INIT) i++;        /* Wait free bus */
    while (transmission == START) i++;       /* Wait end of transmission */
 
-   /* Release the semaphore for I²C */
+   /* Release the semaphore for Iï¿½C */
    errCode = tmdlHdmiTxIWSemaphoreV(gI2CSemaphore);
    if(errCode)
    {

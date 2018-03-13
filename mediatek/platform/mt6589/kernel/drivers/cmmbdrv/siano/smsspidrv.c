@@ -44,7 +44,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #ifdef MTK_SPI                                                                   
 #include <linux/delay.h>
 #include <mach/eint.h>
-#include <cust_eint.h>
+#include <mach/cust_eint.h>
 #include <mach/irqs.h>
 #include <linux/io.h>                              //debug
 
@@ -139,7 +139,7 @@ static void spi_worker_thread(void *arg)
 	//sms_info("worker start");
 	do {
 		/* do we have a msg to write ? */
-		if (!msg && !list_empty(&spi_device->txqueue))                //ÅÐ¶ÏÁ´±íÊÇ·ñÎª¿Õ
+		if (!msg && !list_empty(&spi_device->txqueue))                //ï¿½Ð¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½Îªï¿½ï¿½
 			msg = (struct _smsspi_txmsg *)
 					list_entry(spi_device->txqueue.
 					next, struct _smsspi_txmsg, node);

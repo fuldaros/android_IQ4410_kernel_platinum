@@ -32,7 +32,7 @@
 
 #include <mach/mt_reg_base.h>
 #include <mach/mt_boot.h>
-#include <mtk_kpd.h>		/* custom file */
+#include <mach/mtk_kpd.h>		/* custom file */
 #include <mach/irqs.h>
 #include <mach/eint.h>
 #include <mach/mt_gpio.h>

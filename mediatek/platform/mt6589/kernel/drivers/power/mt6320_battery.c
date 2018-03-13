@@ -57,7 +57,7 @@
 #include <mach/mt_gpt.h>
 #include <mach/mt_boot.h>
 
-#include <cust_battery.h>  
+#include <mach/cust_battery.h>  
 #include "mt6320_battery.h"
 
 #include <mach/pmic_mt6320_sw.h>

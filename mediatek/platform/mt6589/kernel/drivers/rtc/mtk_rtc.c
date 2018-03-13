@@ -36,7 +36,7 @@
 #include <mach/system.h>
 #include <mach/mt_boot.h>
 #endif
-#include <rtc-mt.h>		/* custom file */
+#include <mach/rtc-mt.h>		/* custom file */
 
 #define XLOG_MYTAG	"Power/RTC"
 #define RTC_NAME	"mt-rtc"

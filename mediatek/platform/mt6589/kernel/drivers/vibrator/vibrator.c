@@ -28,7 +28,7 @@
 #include <mach/mt_typedefs.h>
 //#include <mach/mt6577_pm_ldo.h>
 
-#include <cust_vibrator.h>
+#include <mach/cust_vibrator.h>
 
 #define VERSION					        "v 0.1"
 #define VIB_DEVICE	        			"mtk_vibrator"

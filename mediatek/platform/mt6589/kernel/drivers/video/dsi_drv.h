@@ -98,7 +98,7 @@ extern "C" {
 #define		DSI_DCS_SHORT_PACKET_ID_1			0x15
 #define		DSI_DCS_LONG_PACKET_ID				0x39
 #define		DSI_DCS_READ_PACKET_ID				0x06
-		
+
 #define		DSI_GERNERIC_SHORT_PACKET_ID_1		0x13
 #define		DSI_GERNERIC_SHORT_PACKET_ID_2		0x23
 #define		DSI_GERNERIC_LONG_PACKET_ID			0x29
@@ -123,7 +123,7 @@ extern "C" {
 // ---------------------------------------------------------------------------
 
 typedef enum
-{	
+{
 	DSI_STATUS_OK = 0,
 
 	DSI_STATUS_ERROR,
@@ -265,8 +265,8 @@ DSI_STATUS DSI_Write_T2_INS(DSI_T2_INS *t2);
 DSI_STATUS DSI_Write_T3_INS(DSI_T3_INS *t3);
 
 DSI_STATUS DSI_TXRX_Control(bool cksm_en, 
-                                  bool ecc_en, 
-                                  unsigned char lane_num, 
+                                  bool ecc_en,
+                                  unsigned char lane_num,
                                   unsigned char vc_num,
                                   bool null_packet_en,
                                   bool err_correction_en,
@@ -345,4 +345,3 @@ void DSI_PLL_Select(unsigned int pll_select);
 #endif
 
 #endif // __DPI_DRV_H__
-

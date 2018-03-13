@@ -1,4 +1,4 @@
-#include <linux/autoconf.h>
+#include <generated/autoconf.h>
 #include <linux/module.h>
 #include <linux/moduleparam.h>
 #include <linux/init.h>
@@ -26,7 +26,7 @@
 
 #include "mt_sd.h"
 #include <sd_misc.h>
-#include "board-custom.h"
+#include <mach/board-custom.h>
 #include "../../../../../../kernel/drivers/mmc/card/queue.h"
 
 #ifndef FPGA_PLATFORM
@@ -39,7 +39,7 @@
 #include <asm/uaccess.h>
 
 #ifdef MTK_EMMC_SUPPORT
-#include "partition_define.h"
+#include <mach/partition_define.h>
 
 //extern struct excel_info PartInfoEmmc[PART_NUM];
 extern int simple_sd_request(struct mmc_host*mmc, struct mmc_request*mrq);

@@ -100,7 +100,7 @@ __inline LCD_FB_FORMAT get_lcd_tmp_buffer_format(void)
         LCD_FB_FORMAT_RGB565,
         LCD_FB_FORMAT_RGB888
     };
-    
+
     return TO_LCD_FORMAT[get_dsi_tmp_buffer_format()];
 }
 
@@ -132,7 +132,7 @@ static BOOL disp_drv_dsi_init_context(void)
     lcm_drv->get_params(lcm_params);
 
 	dsiTmpBufBpp=get_dsi_tmp_buffer_bpp();
-    
+
     return TRUE;
 }
 
@@ -148,7 +148,7 @@ static void init_intermediate_buffers(UINT32 fbPhysAddr)
 
 	DISP_LOG_PRINT(ANDROID_LOG_INFO, "DSI", "init_intermediate_buffers \n");
 	DISP_LOG_PRINT(ANDROID_LOG_INFO, "DSI", "tmpFbStartPA=%x, fbPhysAddr=%x \n", tmpFbStartPA, fbPhysAddr);
-    
+
     for (i = 0; i < lcm_params->dsi.intermediat_buffer_num; ++ i)
     {
         TempBuffer *b = &s_tmpBuffers[i];
@@ -166,7 +166,7 @@ static void init_intermediate_buffers(UINT32 fbPhysAddr)
 
 static void init_lcd(void)
 {
-	UINT32 i;		
+	UINT32 i;
 
 	// Config LCD Controller
 	LCD_CHECK_RET(LCD_LayerEnable(LCD_LAYER_ALL, FALSE));
@@ -203,7 +203,7 @@ static void init_lcd(void)
 			LCD_CHECK_RET(LCD_FBSetAddress(LCD_FB_0 + i, s_tmpBuffers[i].pa));
 			LCD_CHECK_RET(LCD_FBEnable(LCD_FB_0 + i, TRUE));
 		}
-	
+
 		LCD_CHECK_RET(LCD_SetOutputMode(LCD_OUTPUT_TO_MEM));
 		LCD_CHECK_RET(LCD_WaitDPIIndication(TRUE));
 	}
@@ -220,7 +220,7 @@ static void init_dpi(BOOL isDpiPoweredOn)
     DPI_CHECK_RET(DPI_EnableSeqOutput(FALSE));
 
     DPI_CHECK_RET(DPI_FBSetSize(DISP_GetScreenWidth(), DISP_GetScreenHeight()));
-    
+
     for (i = 0; i < lcm_params->dsi.intermediat_buffer_num; ++ i)
     {
         DPI_CHECK_RET(DPI_FBSetAddress(DPI_FB_0 + i, s_tmpBuffers[i].pa));
@@ -270,7 +270,7 @@ void init_dsi(BOOL isDsiPoweredOn)
 								   (BOOL)(1 - lcm_params->dsi.cont_clock),
                                    0));                     //max_return_size
 
-    
+
 	//initialize DSI_PHY
 #ifdef MT65XX_NEW_DISP
 	DSI_PLL_Select(lcm_params->dsi.pll_select);
@@ -282,7 +282,7 @@ void init_dsi(BOOL isDsiPoweredOn)
 	}
 #endif
 #endif
-#endif	
+#endif
 	DSI_PHY_clk_switch(TRUE);
 	DSI_PHY_TIMCONFIG(lcm_params);
 #ifndef MT65XX_NEW_DISP
@@ -306,10 +306,10 @@ void init_dsi(BOOL isDsiPoweredOn)
         DSI_CHECK_RET(DSI_PS_Control(lcm_params->dsi.PS, lcm_params->width * dsiTmpBufBpp));
 #endif
     }
-	
+
     DSI_CHECK_RET(DSI_enable_MIPI_txio(TRUE));
 
-	
+
 }
 
 // ---------------------------------------------------------------------------
@@ -320,7 +320,7 @@ bool DDMS_capturing=0;
 
 static DISP_STATUS dsi_init(UINT32 fbVA, UINT32 fbPA, BOOL isLcmInited)
 {
-	if (!disp_drv_dsi_init_context()) 
+	if (!disp_drv_dsi_init_context())
 		return DISP_STATUS_NOT_IMPLEMENTED;
 
 	if(lcm_params->dsi.mode == CMD_MODE) {
@@ -329,7 +329,7 @@ static DISP_STATUS dsi_init(UINT32 fbVA, UINT32 fbPA, BOOL isLcmInited)
 #endif
 		init_dsi(isLcmInited);
 
-		if (NULL != lcm_drv->init && !isLcmInited) 
+		if (NULL != lcm_drv->init && !isLcmInited)
 		{
 			lcm_drv->init();
 			DSI_LP_Reset();
@@ -373,7 +373,7 @@ static DISP_STATUS dsi_init(UINT32 fbVA, UINT32 fbPA, BOOL isLcmInited)
 
 		DSI_SetMode(lcm_params->dsi.mode);
 
-#ifndef BUILD_UBOOT	
+#ifndef BUILD_UBOOT
 #ifndef MT65XX_NEW_DISP
 		if(lcm_params->dsi.lcm_ext_te_monitor)
 		{
@@ -387,9 +387,9 @@ static DISP_STATUS dsi_init(UINT32 fbVA, UINT32 fbPA, BOOL isLcmInited)
 			DSI_set_noncont_clk(false, lcm_params->dsi.noncont_clock_period);
 
 		if(lcm_params->dsi.lcm_int_te_monitor)
-			DSI_set_int_TE(false, lcm_params->dsi.lcm_int_te_period);			
+			DSI_set_int_TE(false, lcm_params->dsi.lcm_int_te_period);
 #endif
-#endif			
+#endif
 	}
 #ifdef MT65XX_NEW_DISP
 		{
@@ -400,12 +400,12 @@ static DISP_STATUS dsi_init(UINT32 fbVA, UINT32 fbPA, BOOL isLcmInited)
 				config.bgROI.width = DISP_GetScreenWidth();
 				config.bgROI.height = DISP_GetScreenHeight();
 				config.bgColor = 0x0;	// background color
-	
+
 				config.pitch = DISP_GetScreenWidth()*2;
 				config.srcROI.x = 0;config.srcROI.y = 0;
 				config.srcROI.height= DISP_GetScreenHeight();config.srcROI.width= DISP_GetScreenWidth();
-				config.ovl_config.source = OVL_LAYER_SOURCE_MEM; 
-	
+				config.ovl_config.source = OVL_LAYER_SOURCE_MEM;
+
         if(lcm_params->dsi.mode != CMD_MODE)
         {
             config.ovl_config.layer = FB_LAYER;
@@ -427,10 +427,10 @@ static DISP_STATUS dsi_init(UINT32 fbVA, UINT32 fbPA, BOOL isLcmInited)
             m4u_config_port(&portStruct);
         }
         config.ovl_config.layer = FB_LAYER;
-        config.ovl_config.layer_en = 1; 
+        config.ovl_config.layer_en = 1;
         config.ovl_config.fmt = OVL_INPUT_FORMAT_RGB565;
-        config.ovl_config.addr = fbPA;	
-        config.ovl_config.source = OVL_LAYER_SOURCE_MEM; 
+        config.ovl_config.addr = fbPA;
+        config.ovl_config.source = OVL_LAYER_SOURCE_MEM;
         config.ovl_config.src_x = 0;
         config.ovl_config.src_y = 0;
         config.ovl_config.dst_x = 0;	   // ROI
@@ -441,19 +441,19 @@ static DISP_STATUS dsi_init(UINT32 fbVA, UINT32 fbPA, BOOL isLcmInited)
         config.ovl_config.keyEn = 0;
         config.ovl_config.key = 0xFF;	   // color key
         config.ovl_config.aen = 0;			  // alpha enable
-        config.ovl_config.alpha = 0;	
+        config.ovl_config.alpha = 0;
 
         LCD_LayerSetAddress(FB_LAYER, fbPA);
         LCD_LayerSetFormat(FB_LAYER, LCD_LAYER_FORMAT_RGB565);
         LCD_LayerSetOffset(FB_LAYER, 0, 0);
         LCD_LayerSetSize(FB_LAYER,DISP_GetScreenWidth(),DISP_GetScreenHeight());
         LCD_LayerSetPitch(FB_LAYER, ALIGN_TO(DISP_GetScreenWidth(),32) * 2);
-        LCD_LayerEnable(FB_LAYER, TRUE);                    
+        LCD_LayerEnable(FB_LAYER, TRUE);
         if(lcm_params->dsi.mode == CMD_MODE)
             config.dstModule = DISP_MODULE_DSI_CMD;// DISP_MODULE_WDMA1
         else
             config.dstModule = DISP_MODULE_DSI_VDO;// DISP_MODULE_WDMA1
-        config.outFormat = RDMA_OUTPUT_FORMAT_ARGB; 
+        config.outFormat = RDMA_OUTPUT_FORMAT_ARGB;
         if(lcm_params->dsi.mode != CMD_MODE)
             disp_path_get_mutex();
 
@@ -495,7 +495,7 @@ static DISP_STATUS dsi_init(UINT32 fbVA, UINT32 fbPA, BOOL isLcmInited)
 static DISP_STATUS dsi_enable_power(BOOL enable)
 {
 	disp_drv_dsi_init_context();
-	
+
 	if(lcm_params->dsi.mode == CMD_MODE) {
 
 		if (enable) {
@@ -505,37 +505,37 @@ static DISP_STATUS dsi_enable_power(BOOL enable)
 			DSI_PHY_clk_switch(1);
 			DSI_PHY_clk_setting(lcm_params->dsi.pll_div1, lcm_params->dsi.pll_div2, lcm_params->dsi.LANE_NUM);
 			DSI_CHECK_RET(DSI_PowerOn());
-			DSI_WaitForNotBusy();		
+			DSI_WaitForNotBusy();
 			DSI_clk_HS_mode(0);
-			DSI_clk_ULP_mode(0);			
-			DSI_lane0_ULP_mode(0);	
+			DSI_clk_ULP_mode(0);
+			DSI_lane0_ULP_mode(0);
 			DSI_Reset();
 			LCD_CHECK_RET(LCD_PowerOn());
 #else
 
-			DSI_PHY_clk_switch(1); 
+			DSI_PHY_clk_switch(1);
 #ifndef MT65XX_NEW_DISP
 			DSI_CHECK_RET(DSI_PowerOn());
 			if(Need_Wait_ULPS())
 				Wait_ULPS_Mode();
-			
+
 			DSI_PHY_clk_setting(lcm_params->dsi.pll_div1, lcm_params->dsi.pll_div2, lcm_params->dsi.LANE_NUM);
-#else	
+#else
 			if(lcm_params->dsi.pll_select == 1)
 			{
 					ASSERT(0 == enable_pll(LVDSPLL,"mtk_dsi"));
   		  }
 			DSI_PHY_clk_setting(lcm_params);
 			DSI_CHECK_RET(DSI_PowerOn());
-			DSI_clk_ULP_mode(0);			
+			DSI_clk_ULP_mode(0);
 			DSI_lane0_ULP_mode(0);
-//			DSI_clk_HS_mode(1);	
+//			DSI_clk_HS_mode(1);
 #endif
 			DSI_CHECK_RET(DSI_enable_MIPI_txio(TRUE));
 
 #ifndef MT65XX_NEW_DISP
 			Wait_WakeUp();
-			LCD_CHECK_RET(LCD_PowerOn());		
+			LCD_CHECK_RET(LCD_PowerOn());
 #endif
 
 #endif
@@ -561,20 +561,20 @@ static DISP_STATUS dsi_enable_power(BOOL enable)
 			DSI_CHECK_RET(DSI_enable_MIPI_txio(TRUE));
 			DSI_PHY_clk_switch(1);
 			DSI_PHY_clk_setting(lcm_params->dsi.pll_div1, lcm_params->dsi.pll_div2, lcm_params->dsi.LANE_NUM);
-			DSI_CHECK_RET(DSI_PowerOn());			
-			DSI_clk_ULP_mode(0);			
+			DSI_CHECK_RET(DSI_PowerOn());
+			DSI_clk_ULP_mode(0);
 			DSI_lane0_ULP_mode(0);
-			DSI_clk_HS_mode(0);	
+			DSI_clk_HS_mode(0);
 			DSI_Reset();
 			DPI_CHECK_RET(DPI_PowerOn());
 			LCD_CHECK_RET(LCD_PowerOn());
 #else
-			DSI_PHY_clk_switch(1); 
+			DSI_PHY_clk_switch(1);
 #ifndef MT65XX_NEW_DISP
 			DSI_CHECK_RET(DSI_PowerOn());
 			if(Need_Wait_ULPS())
 				Wait_ULPS_Mode();
-			
+
 			DSI_PHY_clk_setting(lcm_params->dsi.pll_div1, lcm_params->dsi.pll_div2, lcm_params->dsi.LANE_NUM);
 #else
 			needStartDSI = true;
@@ -584,16 +584,16 @@ static DISP_STATUS dsi_enable_power(BOOL enable)
 			}
 			DSI_PHY_clk_setting(lcm_params);
 			DSI_CHECK_RET(DSI_PowerOn());
-			DSI_clk_ULP_mode(0);			
+			DSI_clk_ULP_mode(0);
 			DSI_lane0_ULP_mode(0);
-			DSI_clk_HS_mode(0);	
+			DSI_clk_HS_mode(0);
 #endif
 			DSI_CHECK_RET(DSI_enable_MIPI_txio(TRUE));
 
 #ifndef MT65XX_NEW_DISP
 			Wait_WakeUp();
 			DPI_CHECK_RET(DPI_PowerOn());
-			LCD_CHECK_RET(LCD_PowerOn());		
+			LCD_CHECK_RET(LCD_PowerOn());
 #endif
 #endif
 	    } else {
@@ -602,20 +602,20 @@ static DISP_STATUS dsi_enable_power(BOOL enable)
 #ifndef MT65XX_NEW_DISP
 			if(lcm_params->dsi.noncont_clock)
 				DSI_set_noncont_clk(false, lcm_params->dsi.noncont_clock_period);
-			
+
 			if(lcm_params->dsi.lcm_int_te_monitor)
 				DSI_set_int_TE(false, lcm_params->dsi.lcm_int_te_period);
 #endif
 #endif
 #ifndef MT65XX_NEW_DISP
-			LCD_CHECK_RET(LCD_PowerOff());		
+			LCD_CHECK_RET(LCD_PowerOff());
 			DPI_CHECK_RET(DPI_PowerOff());
 #endif
 #if 1
 			DSI_lane0_ULP_mode(1);
-			DSI_clk_ULP_mode(1);	
+			DSI_clk_ULP_mode(1);
 			DSI_CHECK_RET(DSI_PowerOff());
-#endif			
+#endif
 			DSI_PHY_clk_switch(0);
 			// Switch bus to GPIO, then power level will be decided by GPIO setting.
 			DSI_CHECK_RET(DSI_enable_MIPI_txio(FALSE));
@@ -663,15 +663,15 @@ static DISP_STATUS dsi_update_screen(BOOL isMuextLocked)
 #ifndef MT65XX_NEW_DISP
 		if(lcm_params->dsi.noncont_clock)
 			DSI_set_noncont_clk(true, lcm_params->dsi.noncont_clock_period);
-	
+
 		if(lcm_params->dsi.lcm_int_te_monitor)
 			DSI_set_int_TE(true, lcm_params->dsi.lcm_int_te_period);
 #endif
-#endif		
+#endif
 	}
 
 	if (DDMS_capturing)
-		DISP_LOG_PRINT(ANDROID_LOG_INFO, "DSI", "[DISP] kernel - dsi_update_screen. DDMS is capturing. Skip one frame. \n");		
+		DISP_LOG_PRINT(ANDROID_LOG_INFO, "DSI", "[DISP] kernel - dsi_update_screen. DDMS is capturing. Skip one frame. \n");
 
 	return DISP_STATUS_OK;
 }
@@ -682,14 +682,14 @@ static UINT32 dsi_get_working_buffer_size(void)
     disp_drv_dsi_init_context();
 
 	if(lcm_params->dsi.mode != CMD_MODE) {
-        
-            return 
+
+            return
             DISP_GetScreenWidth() *
             DISP_GetScreenHeight() *
             dsiTmpBufBpp *
             lcm_params->dsi.intermediat_buffer_num;
 	}
-    
+
     return 0;
 }
 
@@ -700,7 +700,7 @@ static UINT32 dsi_get_working_buffer_bpp(void)
 	if(lcm_params->dsi.mode != CMD_MODE) {
             return dsiTmpBufBpp;
 	}
-    
+
     return 0;
 }
 
@@ -717,7 +717,7 @@ static PANEL_COLOR_FORMAT dsi_get_panel_color_format(void)
 		    case LCM_DSI_FORMAT_RGB888 : return PANEL_COLOR_FORMAT_RGB888;
 		    default : ASSERT(0);
 	    }
-		
+
 	}
 }
 
@@ -760,7 +760,7 @@ DISP_STATUS dsi_capture_framebuffer(UINT32 pvbuf, UINT32 bpp)
 
 	DDMS_capturing=0;
 
-	return DISP_STATUS_OK;	
+	return DISP_STATUS_OK;
 }
 
 
@@ -794,7 +794,7 @@ BOOL dsi_esd_check(void)
 			dsi_update_screen(false);
 #endif
 		return result;
-#endif	
+#endif
 	}
 
 }
@@ -808,8 +808,8 @@ void dsi_esd_reset(void)
     ///  what we need is some setting for LCM init
     if(lcm_params->dsi.mode == CMD_MODE) {
         DSI_clk_HS_mode(0);
-        DSI_clk_ULP_mode(0);            
-        DSI_lane0_ULP_mode(0);  
+        DSI_clk_ULP_mode(0);
+        DSI_lane0_ULP_mode(0);
     }
 	else {
 
@@ -820,7 +820,7 @@ void dsi_esd_reset(void)
 		DPI_CHECK_RET(DPI_DisableClk());
 
 	}
-	
+
 }
 
 const DISP_DRIVER *DISP_GetDriverDSI()
@@ -829,7 +829,7 @@ const DISP_DRIVER *DISP_GetDriverDSI()
     {
         .init                   = dsi_init,
         .enable_power           = dsi_enable_power,
-        .update_screen          = dsi_update_screen,       
+        .update_screen          = dsi_update_screen,
         .get_working_buffer_size = dsi_get_working_buffer_size,
 
         .get_panel_color_format = dsi_get_panel_color_format,
@@ -843,5 +843,3 @@ const DISP_DRIVER *DISP_GetDriverDSI()
 
     return &DSI_DISP_DRV;
 }
-
-

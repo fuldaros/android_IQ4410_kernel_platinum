@@ -16,13 +16,13 @@
 #include <linux/cdev.h>
 #include <linux/device.h>
 #include <linux/mtd/mtd.h>
-#include <linux/autoconf.h>
+#include <generated/autoconf.h>
 #include <linux/sched.h>	//show_stack(current,NULL)
 #include <mach/env.h>
 
-#include "partition_define.h"
+#include <mach/partition_define.h>
 #include "dumchar.h"		/* local definitions */
-#include "pmt.h"
+#include <mach/pmt.h>
 #include <linux/mmc/host.h>
 #include "../mmc-host/mt_sd.h"
 #include <linux/genhd.h>

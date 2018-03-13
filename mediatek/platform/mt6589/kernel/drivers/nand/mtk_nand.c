@@ -47,7 +47,7 @@
 #include <mach/mt_irq.h>
 #include "partition.h"
 #include <asm/system.h>
-#include "partition_define.h"
+#include <mach/partition_define.h>
 #include <mach/mt_boot.h>
 //#include "../../../../../../source/kernel/drivers/aee/ipanic/ipanic.h"
 #include <linux/rtc.h>

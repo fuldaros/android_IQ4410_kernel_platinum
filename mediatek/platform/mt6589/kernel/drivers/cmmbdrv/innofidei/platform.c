@@ -19,7 +19,7 @@ struct device *g_innodev_platform_dev;
 #include <linux/delay.h>
 #include <mach/eint.h>
 #include <cust_gpio_usage.h>
-#include <cust_eint.h>
+#include <mach/cust_eint.h>
 #include <mach/irqs.h>
 #include <linux/io.h>                              
 #include "if208.h"
