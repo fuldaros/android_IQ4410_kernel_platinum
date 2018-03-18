@@ -816,18 +816,11 @@ struct input_keymap_entry {
 #define ABS_MT_TRACKING_ID	0x39	/* Unique ID of initiated contact */
 #define ABS_MT_PRESSURE		0x3a	/* Pressure on contact area */
 #define ABS_MT_DISTANCE		0x3b	/* Contact hover distance */
-//lenovo jixu add begin
-#define ABS_MT_POSITION_X_W 0x3c	/* X w*/
-#define ABS_MT_POSITION_Y_W	0x3d	/* Y w */
-//lenovo jixu add end
 
 #ifdef __KERNEL__
 /* Implementation details, userspace should not care about these */
 #define ABS_MT_FIRST		ABS_MT_TOUCH_MAJOR
-//lenovo jixu modify begin
-//#define ABS_MT_LAST		ABS_MT_DISTANCE
-#define ABS_MT_LAST		ABS_MT_POSITION_Y_W
-//lenovo jixu modify end
+#define ABS_MT_LAST		ABS_MT_DISTANCE
 #endif
 
 #define ABS_MAX			0x3f

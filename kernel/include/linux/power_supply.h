@@ -128,15 +128,10 @@ enum power_supply_property {
 	POWER_SUPPLY_PROP_USB_HC,
 	POWER_SUPPLY_PROP_USB_OTG,
 	POWER_SUPPLY_PROP_CHARGE_ENABLED,
-
-	/*Lenovo-sw begin yexh1 add 2013-04-12,add for bat charging current */ 
-       POWER_SUPPLY_PROP_batt_Icharging,
-       /*Lenovo-sw end yexh1 add 2013-04-12,add for bat charging current */ 
-	
 	/* 20100723 James Lo */
 	POWER_SUPPLY_PROP_batt_vol,
 	POWER_SUPPLY_PROP_batt_temp,
-	/* 20100723 Add for EM */	
+	/* 20100723 Add for EM */
 	POWER_SUPPLY_PROP_TemperatureR,
 	POWER_SUPPLY_PROP_TempBattVoltage,
 	POWER_SUPPLY_PROP_InstatVolt,
